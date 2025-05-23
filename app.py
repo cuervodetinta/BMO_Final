@@ -36,12 +36,12 @@ elif pagina == "Control de Baile":
 audio_file = open("AudioBMO.mp3", "rb")
 audio_bytes = audio_file.read()
 
-    if st.button("¡Reproducir Baile!"):
+ if st.button("¡Reproducir Baile!"):
         resultado = publicar_baile()
         st.audio(audio_bytes, format="audio/mp3")
         if resultado.rc == 0:
             st.success("✅ Motores activados en Wokwi (mensaje MQTT enviado).")
-        else:
+    else:
             st.error("❌ Fallo al enviar el mensaje MQTT.")
             st.audio(audio_bytes, format="audio/mp3")
             st.success("Motores activados y música sonando.")
