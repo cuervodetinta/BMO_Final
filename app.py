@@ -4,9 +4,9 @@ import time
 import json
 
 # Configuración MQTT
-broker = "broker.hivemq.com"  # También puedes usar broker.mqttdashboard.com
+broker = "broker.mqttdashboard.com"  # También puedes usar broker.mqttdashboard.com
 port = 1883
-topic = "wokwi/baile"  # Asegúrate que este topic lo escuche tu ESP32 en Wokwi
+topic = "BMO_wokwi"  # Asegúrate que este topic lo escuche tu ESP32 en Wokwi
 
 client = paho.Client("BMO_streamlit")
 client.connect(broker, port)
