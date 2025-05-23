@@ -18,11 +18,14 @@ elif pagina == "Control de Baile":
     st.title("Control de Baile 🎵🕺")
 
     # Reproducir música
-    audio_file = open("baile.mp3", "rb")
+    audio_file = open("AudioBMO.mp3", "rb")
     audio_bytes = audio_file.read()
 
     if st.button("¡Que empiece el show!"):
         # Publicar mensaje MQTT
+        audio_file = open("AudioBMO.mp3", "rb")
+        audio_bytes = audio_file.read()
+        
         msg = json.dumps({"bailar": True})
         publish.single("bailar/accion", msg, hostname="broker.mqttdashboard.com")
 
