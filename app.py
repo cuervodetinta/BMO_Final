@@ -4,50 +4,72 @@ import time
 import json
 
 # Configuración MQTT
-broker = "broker.mqttdashboard.com"  # También puedes usar broker.mqttdashboard.com
+broker = "broker.mqttdashboard.com"
 port = 1883
-topic = "BMO_wokwi"  # Asegúrate que este topic lo escuche tu ESP32 en Wokwi
+topic = "BMO_wokwi"
 
 client = paho.Client("BMO_streamlit")
 client.connect(broker, port)
 client.loop_start()
 
+# Función para publicar mensaje de baile
 def publicar_baile():
-    payload = json.dumps({"bailar": True})
-    resultado = client.publish(topic, payload)
+    mensaje = {"accion": "baile", "duracion": 6}
+    resultado = client.publish(topic, json.dumps(mensaje))
     return resultado
 
-st.set_page_config(page_title="BMO interactivo", layout="centered")
-
-# Sidebar de navegación
-st.sidebar.title("Funciones Disponibles")
-pagina = st.sidebar.radio("Ir a", ["Saludo", "Control de Baile", "Chatea con BMO"])
-
 # Página: Saludo
-if pagina == "Saludo":
+def pagina_saludo():
     st.title("Saludo de BMO")
-    st.write("Presiona el boton para que BMO te salude.")
-    #APARTIR DE AQUI EMPIEZA A PROGRAMAR EL SALUDO
+    st.write("Presiona el botón para que BMO te salude.")
+    if st.button("¡Saluda, BMO!"):
+        resultado = client.publish(topic, json.dumps({"accion": "saludo"}))
+        if resultado.rc == 0:
+            st.success("✅ BMO envió su saludo.")
+        else:
+            st.error("❌ Fallo al enviar el saludo.")
 
 # Página: Control de Baile
-elif pagina == "Control de Baile":
+def pagina_baile():
     st.title("🕺 Activar Motores de Baile")
+    st.write("Presiona el botón para que BMO baile y suene la canción.")
+    
+    try:
+        audio_file = open("AudioBMO.mp3", "rb")
+        audio_bytes = audio_file.read()
+        audio_file.close()
+    except FileNotFoundError:
+        st.error("❌ Archivo de audio no encontrado.")
+        return
 
-audio_file = open("AudioBMO.mp3", "rb")
-audio_bytes = audio_file.read()
-
-if st.button("¡Reproducir Baile!"):
+    if st.button("¡Reproducir Baile!"):
         resultado = publicar_baile()
         st.audio(audio_bytes, format="audio/mp3")
         if resultado.rc == 0:
             st.success("✅ Motores activados en Wokwi (mensaje MQTT enviado).")
         else:
             st.error("❌ Fallo al enviar el mensaje MQTT.")
-            st.audio(audio_bytes, format="audio/mp3")
-            st.success("Motores activados y música sonando.")
 
 # Página: Chatea con BMO
-elif pagina == "Chatea con BMO":
-    st.title("Preguntale a BMO")
-    st.write("Aquí podrías mostrar datos en tiempo real del sistema.")
-    #APARTIR DE AQUI EMPIEZA A PROGRAMAR EL SALUDO
+def pagina_chat():
+    st.title("Chatea con BMO")
+    st.write("Aquí podras chatear con BMO En tiempo real")
+    pregunta = st.text_input("¿Qué quieres preguntarle a BMO?")
+    if st.button("Enviar pregunta"):
+        if pregunta.strip():
+            client.publish(topic, json.dumps({"accion": "pregunta", "texto": pregunta}))
+            st.success("✅ Pregunta enviada a BMO.")
+        else:
+            st.warning("Por favor escribe algo antes de enviar.")
+
+# Diccionario de páginas
+paginas = {
+    "Saludo": pagina_saludo,
+    "Control de Baile": pagina_baile,
+    "Chatea con BMO": pagina_chat,
+}
+
+# Sidebar de navegación
+st.sidebar.title("Funciones Disponibles")
+seleccion = st.sidebar.radio("Ir a", list(paginas.keys()))
+paginas[seleccion]()
