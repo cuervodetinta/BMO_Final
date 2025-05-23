@@ -20,7 +20,7 @@ def publicar_baile():
 
 # Página: Saludo
 def pagina_saludo():
-    st.title("Saludo de BMO")
+    st.title("👋 Saludo de BMO")
     st.write("Presiona el botón para que BMO te salude.")
     if st.button("¡Saluda, BMO!"):
         resultado = client.publish(topic, json.dumps({"accion": "saludo"}))
@@ -52,7 +52,7 @@ def pagina_baile():
 
 # Página: Chatea con BMO
 def pagina_chat():
-    st.title("Chatea con BMO")
+    st.title("💬 Chatea con BMO")
     st.write("Aquí podras chatear con BMO En tiempo real")
     pregunta = st.text_input("¿Qué quieres preguntarle a BMO?")
     if st.button("Enviar pregunta"):
