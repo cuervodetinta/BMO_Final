@@ -32,7 +32,7 @@ if pagina == "Saludo":
 elif pagina == "Control de Baile":
     st.title("🕺 Activar Motores de Baile")
 
-audio_file = open("baile.mp3", "rb")
+audio_file = open("AudioBMO.mp3", "rb")
 audio_bytes = audio_file.read()
 
 if st.button("¡Reproducir Baile!"):
