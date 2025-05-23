@@ -1,6 +1,21 @@
 import streamlit as st
-import paho.mqtt.publish as publish
+import paho.mqtt.client as paho
+import time
 import json
+
+# Configuración MQTT
+broker = "broker.hivemq.com"  # También puedes usar broker.mqttdashboard.com
+port = 1883
+topic = "wokwi/baile"  # Asegúrate que este topic lo escuche tu ESP32 en Wokwi
+
+client = paho.Client("BMO_streamlit")
+client.connect(broker, port)
+client.loop_start()
+
+def publicar_baile():
+    payload = json.dumps({"bailar": True})
+    resultado = client.publish(topic, payload)
+    return resultado
 
 st.set_page_config(page_title="BMO interactivo", layout="centered")
 
@@ -15,21 +30,18 @@ if pagina == "Saludo":
 
 # Página: Control de Baile
 elif pagina == "Control de Baile":
-    st.title("Control de Baile 🎵🕺")
+    st.title("🕺 Activar Motores de Baile")
 
-    # Reproducir música
-    audio_file = open("AudioBMO.mp3", "rb")
-    audio_bytes = audio_file.read()
+audio_file = open("baile.mp3", "rb")
+audio_bytes = audio_file.read()
 
-    if st.button("¡Que empiece el show!"):
-        # Publicar mensaje MQTT
-        audio_file = open("AudioBMO.mp3", "rb")
-        audio_bytes = audio_file.read()
-        
-        msg = json.dumps({"bailar": True})
-        publish.single("bailar/accion", msg, hostname="broker.mqttdashboard.com")
-
-        # Reproducir audio
+if st.button("¡Reproducir Baile!"):
+    resultado = publicar_baile()
+    st.audio(audio_bytes, format="audio/mp3")
+    if resultado.rc == 0:
+        st.success("✅ Motores activados en Wokwi (mensaje MQTT enviado).")
+    else:
+        st.error("❌ Fallo al enviar el mensaje MQTT.")
         st.audio(audio_bytes, format="audio/mp3")
         st.success("Motores activados y música sonando.")
 
