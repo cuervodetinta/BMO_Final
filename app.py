@@ -62,7 +62,7 @@ def pagina_chat():
         else:
             st.warning("Por favor escribe algo antes de enviar.")
 
-//LO QUE ISIS ME ACABA DE PASAR
+#LO QUE ISIS ME ACABA DE PASAR
 # Configura tu API key de ElevenLabs
 ELEVENLABS_API_KEY = "sk_628f20d8f86797b404799056f0443d2a4920cadc7cbbbfd1" # Reemplaza con tu API Key real
 #VOICE_ID = "1Z7qQDyqapTm8qBfJx6e" #INGLES
