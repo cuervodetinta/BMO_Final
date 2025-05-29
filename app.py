@@ -43,13 +43,13 @@ def pagina_baile():
         return
 
     if st.button("¡Reproducir Baile!"):
-        client.publish("BMO_wokwi", '{"Act1": "baila"}')
-        st.success("¡Comando enviado para bailar!")
-        st.audio(audio_bytes, format="audio/mp3")
+        resultado = client.publish("BMO_wokwi", json.dumps({"Act1": "baila"}))
         if resultado.rc == 0:
-            st.success("✅ Motores activados en Wokwi (mensaje MQTT enviado).")
+            st.success("✅ Comando enviado para bailar.")
+            st.audio(audio_bytes, format="audio/mp3")
         else:
             st.error("❌ Fallo al enviar el mensaje MQTT.")
+
 
 # Página: Chatea con BMO
 def pagina_chat():
