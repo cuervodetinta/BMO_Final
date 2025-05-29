@@ -43,7 +43,8 @@ def pagina_baile():
         return
 
     if st.button("¡Reproducir Baile!"):
-        resultado = publicar_baile()
+        client.publish("BMO_wokwi", '{"Act1": "baila"}')
+        st.success("¡Comando enviado para bailar!")
         st.audio(audio_bytes, format="audio/mp3")
         if resultado.rc == 0:
             st.success("✅ Motores activados en Wokwi (mensaje MQTT enviado).")
